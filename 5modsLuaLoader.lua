@@ -16,10 +16,16 @@ require("lib\\5modsLuaLoader\\natives2845")
 local parent <const> = menu.add_feature("5Mods Lua Scripts", "parent", 0)
 local scriptFeats <const> = menu.add_feature("5Mods Lua Script Features", "parent", 0)
 
-
+local function get_key_pressed(keyID)
+    local key = MenuKey()
+    key:push_str(keyID)
+    return key:is_down()
+end
 
 local function get_key_pressed(keyID)
-    return controls.is_control_just_pressed(0, keyID)
+    if type(keyID)== "number" then
+        return controls.is_control_just_pressed(0, keyID)
+    end
 end
 
 local function loadScript(scriptName)
@@ -33,7 +39,7 @@ local function loadScript(scriptName)
 
     _G.get_key_pressed = get_key_pressed
     _G.wait = function(time)
-        coroutine.yield(time)
+        return coroutine.yield(time)
     end
     _G["io"].open = function(path, ...) -- has some other params idc about
         path = scriptsPath
