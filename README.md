@@ -8,6 +8,6 @@
 - Projectile Mod by Ideo
 
 ### Issues
-- [ ] Missing swagger
+- [ ] Pointers in params unsupported
 
 Supports most scripts made for "LUA Plugin for Script Hook V 10.1"
