@@ -16,8 +16,10 @@ require("lib\\5modsLuaLoader\\natives2845")
 local parent <const> = menu.add_feature("5Mods Lua Scripts", "parent", 0)
 local scriptFeats <const> = menu.add_feature("5Mods Lua Script Features", "parent", 0)
 
+
+
 local function get_key_pressed(keyID)
-    return controls.is_control_just_pressed(2, keyID)
+    return controls.is_control_just_pressed(0, keyID)
 end
 
 local function loadScript(scriptName)
@@ -30,10 +32,19 @@ local function loadScript(scriptName)
     end
 
     _G.get_key_pressed = get_key_pressed
-    _G.wait = function(id)
+    _G.wait = function(time)
+        coroutine.yield(time)
     end
-    -- Execute the script in its modified environment
+    _G["io"].open = function(path, ...) -- has some other params idc about
+        path = scriptsPath
+    end
+    _G["TIME"] = CLOCK
+    _G["Keys"] = require("lib\\5modsLuaLoader\\keys")
+    _G["keys"] = require("lib\\5modsLuaLoader\\keys")
+
     chunk()
+
+    menu.notify("Loaded "..scriptName, "Lua Loader")
 
     local scriptEnv = require("lib\\5modsLua\\"..scriptName)
     if scriptEnv.init ~= nil then
@@ -60,7 +71,5 @@ do
         menu.add_feature("Load " .. scriptName, "action", scriptParent.id, function(f)
             loadScript(scriptName)
         end)
-        print("Added script: " .. scriptName) -- Add this line for debugging
-
     end
 end
