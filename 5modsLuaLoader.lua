@@ -17,12 +17,6 @@ local parent <const> = menu.add_feature("5Mods Lua Scripts", "parent", 0)
 local scriptFeats <const> = menu.add_feature("5Mods Lua Script Features", "parent", 0)
 
 local function get_key_pressed(keyID)
-    local key = MenuKey()
-    key:push_str(keyID)
-    return key:is_down()
-end
-
-local function get_key_pressed(keyID)
     if type(keyID)== "number" then
         return controls.is_control_just_pressed(0, keyID)
     end
