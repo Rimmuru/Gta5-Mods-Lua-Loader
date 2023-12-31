@@ -21,6 +21,7 @@ do -- dependencies check
    for _, v in ipairs(includes) do
        if not utils.file_exists(getAppdataPath.."\\scripts\\lib\\5modsLuaLoader\\"..v..".lua") then
            menu.notify("Dependency "..v.." is missing. Please reinstall the script.")
+           return menu.exit()
        else
            require("lib\\5modsLuaLoader\\"..v)
        end
