@@ -17,7 +17,8 @@ local parent <const> = menu.add_feature("5Mods Lua Scripts", "parent", 0)
 local scriptFeats <const> = menu.add_feature("5Mods Lua Script Features", "parent", 0)
 
 local function get_key_pressed(keyID)
-    if type(keyID)== "number" then
+    if type(keyID) == "number" then
+        --menu.notify(tostring(keyID))
         return controls.is_control_just_pressed(0, keyID)
     end
 end
@@ -35,10 +36,17 @@ local function loadScript(scriptName)
     _G.wait = function(time)
         return coroutine.yield(time)
     end
-    _G["io"].open = function(path, ...) -- has some other params idc about
-        path = scriptsPath
+    _G["io"].open = function(path, mode) 
+        local newPath = scriptsPath .. path
+        return io.open(newPath, mode)
     end
-    _G["TIME"] = CLOCK
+    _G["Libs"] = setmetatable({}, {
+        __index = function(t, key)
+            return require("lib.5ModsLua.libs." .. key)
+        end
+    })
+    
+    _G["TIME"] = CLOCK --Override time native namespace
     _G["Keys"] = require("lib\\5modsLuaLoader\\keys")
     _G["keys"] = require("lib\\5modsLuaLoader\\keys")
 
