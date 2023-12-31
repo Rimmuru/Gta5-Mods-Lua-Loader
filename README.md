@@ -9,6 +9,7 @@
 
 ### Issues
 - [ ] Pointers in params unsupported
+- [ ] No support for Lua Plugin (Reloaded)
 - [x] Controls key pressed not detected
 
 Supports most scripts made for "LUA Plugin for Script Hook V 10.1"
