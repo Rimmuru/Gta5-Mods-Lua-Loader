@@ -15,7 +15,8 @@ do -- dependencies check
     local includes <const> = {
         "natives2845",
         "JM36Compat",
-        "5modsCompat"
+        "5modsCompat",
+        "fivemCompat"
     }
    
    for _, v in ipairs(includes) do
@@ -48,6 +49,9 @@ local function loadScript(scriptName)
     -- support for https://www.gta5-mods.com/scripts/tags/lua
     modsCompat()
     
+    -- attempt to support fivem (client)
+    fivemCompat()
+
     chunk()
 
     local status, scriptEnv = pcall(require, "lib\\5modsLua\\"..scriptName)
