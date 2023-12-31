@@ -11,27 +11,24 @@ if not utils.dir_exists(scriptsPath) then
     menu.notify("5Mods scripts folder not found. Creating scripts folder.", "5Mods Lua Loader")
 end
 
-require("lib\\5modsLuaLoader\\natives2845")
+do -- dependencies check
+    local includes <const> = {
+        "natives2845",
+        "JM36Compat",
+        "5modsCompat"
+    }
+   
+   for _, v in ipairs(includes) do
+       if not utils.file_exists(getAppdataPath.."\\scripts\\lib\\5modsLuaLoader\\"..v..".lua") then
+           menu.notify("Dependency "..v.." is missing. Please reinstall the script.")
+       else
+           require("lib\\5modsLuaLoader\\"..v)
+       end
+   end
+end
 
 local parent <const> = menu.add_feature("5Mods Lua Scripts", "parent", 0)
 local scriptFeats <const> = menu.add_feature("5Mods Lua Script Features", "parent", 0)
-
-local function get_key_pressed(keyID)
-    if type(keyID) == "number" then
-        --menu.notify(tostring(keyID))
-        return controls.is_control_just_pressed(0, keyID)
-    end
-end
-
-local pid = player.player_id()
-local infoTable = { -- this is going to suck
-    ["Player"] = {
-        Ped = player.get_player_ped(pid)
-    },
-    ["Vehicle"] = {
-        Id = ped.get_vehicle_ped_is_using(player.get_player_ped(pid))
-    }
-}
 
 local loadedScripts = {}
 
@@ -45,51 +42,11 @@ local function loadScript(scriptName)
     end
 
     -- support for https://www.gta5-mods.com/tools/jm36-lua-plugin-for-script-hook-v-reloaded
-    _G["JM36_GTAV_LuaPlugin_Version"] = 20230724.0
-    _G["JM36"] = _G["JM36"] or {}
+    JM36Compat()
+
+    -- support for https://www.gta5-mods.com/scripts/tags/lua
+    modsCompat()
     
-    _G["Info"] = infoTable
-
-    _G["JM36"].yield = function(time)
-        return coroutine.yield(time)
-    end
-    _G["JM36"].Wait = function(time)
-        return coroutine.yield(time)
-    end
-    
-    _G["JM36"].CreateThread = function(callback)
-        return menu.create_thread(callback)
-    end
-
-    _G["JM36"].CreateThread_HighPriority = function(callback)
-        return menu.create_thread(callback)
-    end
-
-    _G.get_key_pressed = get_key_pressed
-
-    _G.IsControlJustPressed = function(id, idx)
-        return get_key_pressed(idx)
-    end
-
-    _G.wait = function(time)
-        return coroutine.yield(time)
-    end
-
-    _G["io"].open = function(path, mode) 
-        local newPath = scriptsPath .. path
-        return io.open(newPath, mode)
-    end
-
-    _G["Libs"] = setmetatable({}, {
-        __index = function(t, key)
-            return require("lib.5ModsLua.libs." .. key)
-        end
-    })
-    
-    _G["TIME"] = CLOCK --Override time native namespace
-    _G["Keys"] = require("lib\\5modsLuaLoader\\keys")
-    _G["keys"] = require("lib\\5modsLuaLoader\\keys")
-
     chunk()
 
     local status, scriptEnv = pcall(require, "lib\\5modsLua\\"..scriptName)
