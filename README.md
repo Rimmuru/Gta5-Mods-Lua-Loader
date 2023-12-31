@@ -1,15 +1,33 @@
-### How to use
-- ensure the 5modsLuaLoader folder is added into lib folder
-- load script
-- place the lua script into lib/5modsLua
-- create a github issue if you encounter any issues
+### How to Use 5modsLua with 2Take1 Mod Menu
+#### Folder Structure
+1. Ensure you have the following folder structure:
+- 2Take1Menu
+  - scripts/
+      - lib/
+        - 5modsLuaLoader/
+          - (contents of the loader)
+  - 5modsLua.lua
+ 
+#### Loading the Script
+2. Load the script.
+3. Place the any scripts you want to use into 5modsLua (folder).
 
-### Tested Scripts
-- Projectile Mod by Ideo
+### Supports
+- [x] LUA Plugin for Script Hook V 10.1
+- [ ] LUA Plugin for Script Hook V (Reloaded)
+- [ ] FiveM
 
-### Issues
-- [ ] Pointers in params unsupported
-- [ ] No support for Lua Plugin (Reloaded)
-- [x] Controls key pressed not detected
+#### Known Issues
+- [ ] Pointers in params unsupported: Some specific usage of pointers in function parameters may not be supported.
+- [ ] No support for Lua Plugin (Reloaded): This script currently does not work with the Lua Plugin (Reloaded) version.
+- [x] Controls key pressed not detected: The script is unable to detect key presses for control actions.
 
-Supports most scripts made for "LUA Plugin for Script Hook V 10.1"
+#### Support and Bug Reporting
+- If you encounter any issues or have questions, please create a GitHub issue [here](https://github.com/Rimmuru/Gta5-Mods-Lua-Loader/issues) for assistance.
+
+#### Version Information
+- 5modsLua version: 1.0.2
+
+#### License
+- This script is released under the [MIT license](https://github.com/Rimmuru/Gta5-Mods-Lua-Loader/tree/main?tab=MIT-1-ov-file) specified in the repository.
+
