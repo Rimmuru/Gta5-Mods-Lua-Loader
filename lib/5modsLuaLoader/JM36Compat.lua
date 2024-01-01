@@ -24,11 +24,12 @@ local infoTable = { -- this is going to suck
 
 do 
     convertNamespace(ENTITY)
-    convertNamespace(PED)
+    convertNamespace(VEHICLE)
     convertNamespace(PLAYER)
+    convertNamespace(PED)
+    convertNamespace(WEAPON)
     convertNamespace(UI)
     convertNamespace(GRAPHICS)
-    convertNamespace(VEHICLE)
     convertNamespace(SYSTEM)
 end
 
