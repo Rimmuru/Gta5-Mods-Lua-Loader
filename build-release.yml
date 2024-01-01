@@ -1,0 +1,30 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  release:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2  
+
+      - name: Zip Files
+        run: |
+          zip -r release.zip 5modsLuaLoader.lua lib
+        working-directory: ${{ github.workspace }}
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.YOUR_GITHUB_TOKEN }}
+
+      - name: Publish Release
+        run: echo "Released ${{ steps.create_release.outputs.upload_url }}"
