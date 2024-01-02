@@ -16,10 +16,11 @@
 - [x] LUA Plugin for Script Hook V 10.1
 - [x] LUA Plugin for Script Hook V (Reloaded)
 - [ ] FiveM
+- [ ] Stand
 
 #### Known Issues
 - [ ] Pointers in params unsupported: Some specific usage of pointers in function parameters may not be supported.
-- [ ] No support for Lua Plugin (Reloaded): This script currently does not work with the Lua Plugin (Reloaded) version.
+- [x] No support for Lua Plugin (Reloaded): This script currently does not work with the Lua Plugin (Reloaded) version.
 - [x] Controls key pressed not detected: The script is unable to detect key presses for control actions.
 
 #### Support and Bug Reporting
