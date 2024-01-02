@@ -16,7 +16,8 @@ do -- dependencies check
         "natives2845",
         "JM36Compat",
         "5modsCompat",
-        "fivemCompat"
+        "fivemCompat",
+        "standCompat"
     }
    
    for _, v in ipairs(includes) do
@@ -30,7 +31,8 @@ do -- dependencies check
 end
 
 local parent <const> = menu.add_feature("5Mods Lua Scripts", "parent", 0)
-local scriptFeats <const> = menu.add_feature("5Mods Lua Script Features", "parent", 0)
+scriptFeats = menu.add_feature("5Mods Lua Script Features", "parent", 0)
+scriptPlayerFeats = menu.add_player_feature("5Mods Lua Script Features", "parent", 0)
 
 local loadedScripts = {}
 
@@ -48,6 +50,9 @@ local function loadScript(scriptName)
 
     -- support for https://www.gta5-mods.com/scripts/tags/lua
     modsCompat()
+    
+    -- support for stand
+    standCompat()
     
     -- attempt to support fivem (client)
     fivemCompat()
@@ -73,6 +78,7 @@ local function loadScript(scriptName)
         end)
     end
 
+    standRestoreOriginalMenu()
     menu.notify("Loaded "..scriptName, "Lua Loader")
 end
 
