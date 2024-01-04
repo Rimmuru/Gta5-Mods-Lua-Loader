@@ -1,6 +1,5 @@
 function fivemCompat()
     _G["Citizen"] = _G["Citizen"] or {}
-
     _G["Citizen"].CreateThread = function(callback)
         return menu.create_thread(callback)
     end

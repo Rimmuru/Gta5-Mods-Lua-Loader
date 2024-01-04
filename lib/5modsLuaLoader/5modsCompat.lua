@@ -11,23 +11,26 @@ function modsCompat()
     _G.IsControlJustPressed = function(id, idx)
         return get_key_pressed(idx)
     end
-
+    
     _G.wait = function(time)
         return coroutine.yield(time)
     end
-
+    
     _G["io"].open = function(path, mode) 
         local newPath = scriptsPath .. path
         return io.open(newPath, mode)
     end
-
+    
     _G["Libs"] = setmetatable({}, {
         __index = function(t, key)
             return require("lib.5ModsLua.libs." .. key)
         end
     })
     
-    _G["TIME"] = CLOCK --Override time native namespace
+    _G["TIME"] = CLOCK --Override native namespaces
+    _G["AI"] = TASK
+    _G["PAD"] = CONTROLS
+
     _G["Keys"] = require("lib\\5modsLuaLoader\\keys")
     _G["keys"] = require("lib\\5modsLuaLoader\\keys")
 end

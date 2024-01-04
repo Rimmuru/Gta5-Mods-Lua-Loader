@@ -17,7 +17,7 @@ do -- dependencies check
         "JM36Compat",
         "5modsCompat",
         "fivemCompat",
-        "standCompat"
+        "standCompat",
     }
    
    for _, v in ipairs(includes) do
@@ -30,6 +30,7 @@ do -- dependencies check
    end
 end
 
+
 local parent <const> = menu.add_feature("5Mods Lua Scripts", "parent", 0)
 scriptFeats = menu.add_feature("5Mods Lua Script Features", "parent", 0)
 scriptPlayerFeats = menu.add_player_feature("5Mods Lua Script Features", "parent", 0)
@@ -39,6 +40,17 @@ local loadedScripts = {}
 local function loadScript(scriptName)
     local scriptPath = scriptsPath .. scriptName .. ".lua"
  
+    scriptName = trim(scriptName):lower()
+
+    if not scriptParents[scriptName] then
+        print("Loading script "..scriptName)
+        scriptParents[scriptName] = originalMenu.add_feature(scriptName, "parent", scriptFeats.id)
+    end
+    if not scriptPlayerParents[scriptName] then
+        print("Loading script "..scriptName)
+        scriptPlayerParents[scriptName] = originalMenu.add_player_feature(scriptName, "parent", scriptPlayerFeats.id)
+    end
+
     local chunk, errorMessage = _loadfile(scriptPath)
     if not chunk then
         menu.notify("Error loading script: " .. tostring(errorMessage), "Error", 7)
@@ -61,7 +73,7 @@ local function loadScript(scriptName)
 
     local status, scriptEnv = pcall(require, "lib\\5modsLua\\"..scriptName)
     if not status then
-        menu.notify("Error loading module for script: " .. tostring(scriptEnv), "Error", 7)
+        originalMenu.notify("Error loading module for script: " .. tostring(scriptEnv), "Error", 7)
         return
     end
     
@@ -70,7 +82,7 @@ local function loadScript(scriptName)
     end
 
     if scriptEnv and type(scriptEnv.tick) == "function" then
-        loadedScripts[scriptName] = menu.add_feature(scriptName, "toggle", scriptFeats.id, function(f)
+        loadedScripts[scriptName] = originalMenu.add_feature(scriptName, "toggle", scriptFeats.id, function(f)
             while f.on do
                 scriptEnv.tick()
                 coroutine.yield(0)

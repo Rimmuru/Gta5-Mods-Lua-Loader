@@ -2,10 +2,10 @@ local getAppdataPath <const> = utils.get_appdata_path("PopstarDevs", "").."\\2Ta
 local scriptsPath <const> = getAppdataPath.."\\scripts\\lib\\5modsLua\\"
 local originalRequire <const> = require
 
-local scriptParents = {}
-local scriptPlayerParents = {}
+scriptParents = {}
+scriptPlayerParents = {}
 
-local originalMenu = menu
+originalMenu = menu
 local originalPlayer = player
 local originalEvent = event
 
@@ -31,24 +31,23 @@ local function store_dir()
     return scriptsPath.."store\\"
 end
 
-local function my_root(scriptName)
+function my_root(scriptName)
     local scriptParent = scriptParents[scriptName]
     if scriptParent then
         return scriptParent.id
     else
-        return scriptFeats.id -- Default to a general parent if specific not found
+        return scriptFeats.id
     end
 end
 
-local function player_root(scriptName)
+function player_root(scriptName)
     local scriptPlayerParent = scriptPlayerParents[scriptName]
     if scriptPlayerParent then
         return scriptPlayerParent.id
     else
-        return scriptPlayerFeats.id -- Default to a general parent if specific not found
+        return scriptPlayerFeats.id
     end
 end
-
 
 local function RGBAToInt(Red, Green, Blue, Alpha)
     Alpha = Alpha or 255
@@ -327,5 +326,4 @@ function standRestoreOriginalMenu()
     _G["menu"] = originalMenu
     _G["player"] = originalPlayer
     _G["require"] = originalRequire
-
 end
