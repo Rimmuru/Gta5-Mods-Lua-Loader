@@ -1,13 +1,12 @@
 local getAppdataPath <const> = utils.get_appdata_path("PopstarDevs", "").."\\2Take1Menu"
 local scriptsPath <const> = getAppdataPath.."\\scripts\\lib\\5modsLua\\"
-local originalRequire <const> = require
 
+local originalRequire <const> = require
+originalMenu = menu --needs to be global because kill me
+originalPlayer = player
+originalEvent = event
 scriptParents = {}
 scriptPlayerParents = {}
-
-originalMenu = menu
-local originalPlayer = player
-local originalEvent = event
 
 function trim(s)
     return (s:gsub("^%s*(.-)%s*$", "%1"))
@@ -32,8 +31,11 @@ local function store_dir()
 end
 
 function my_root(scriptName)
+    originalMenu.notify(tostring("Standcompat my_root 1: "..scriptName))
+    
     local scriptParent = scriptParents[scriptName]
     if scriptParent then
+        originalMenu.notify(tostring("Standcompat my_root 1 name: "..scriptParent.name))
         return scriptParent.id
     else
         return scriptFeats.id
@@ -90,13 +92,13 @@ local function utilsGlobals()
         originalRequire("lib\\standScriptLoader\\natives2845")
     end
     _G["util"].toast = function(str, bitflags)
-        originalMenu.notify(tostring(str), "Stand Loader") --sanitise the string
+        originalMenu.notify(tostring(str), "Stand Loader")
     end
     _G["util"].log = function(str)
        print(tostring(str), "Stand Loader")
     end
     _G["util"].create_tick_handler = function(func)
-       --do nothing for now, seems to be some sort of looped thread
+       --do nothing for now, will 100% forget
     end
 end
 
@@ -136,6 +138,7 @@ local function menuGlobals()
         return createColorPickerFeature(command, command, name, defaultColor, name)
     end 
       
+    --value isnt passed back to stand :(
     _G["menu"].slider = function(root, name, command, description, min, max, defaultValue, step, callback)   
         local feature
         if type(root) == "userdata" then
@@ -178,7 +181,7 @@ local function menuGlobals()
     end
     
     _G["menu"].readonly = function(root, name, value)  
-        return {} --if we pass a feature it causes game to crash
+        return {} --todo make work 
     end   
 
     _G["menu"].divider = function(root, name)
@@ -251,16 +254,16 @@ local function playersGlobals()
         return playersList
     end
 
-    _G["players"].on_join = function(id)
-        originalEvent.add_event_listener("player_join", function(e)
-            id = e
-        end)
+    _G["players"].on_join = function(callback)
+       --originalEvent.add_event_listener("player_join", function(e) --this is wrong
+       --    id = e
+       --end)
     end
     _G["players"].user = function()
         return originalPlayer.player_id()
     end
     _G["players"].dispatch_on_join = function()
-        --idfk what this is supposed to do
+        --related to on_join, seems to be a event listener calling on_join
     end
     _G["players"].get_rockstar_id = function(id)
         return originalPlayer.get_player_scid(id)
@@ -272,7 +275,7 @@ local function directxGlobals()
     _G["directx"] = _G["directx"] or {}
     _G["directx"].create_texture = create_texture_wrapper
     
-    --seems to have issues -.-
+    --todo: fix rotation and scaling issues
     _G["directx"].draw_texture = function(texture_id, sizeX, sizeY, centerX, centerY, posX, posY, rotation, color)
         --local colorInt = (color["r"] * 255) << 24 | (color["g"] * 255) << 16 | (color["b"] * 255) << 8 | (color["a"] * 255)
         local colorInt = RGBAToInt(color["r"]*255, color["g"]*255, color["b"]*255)
