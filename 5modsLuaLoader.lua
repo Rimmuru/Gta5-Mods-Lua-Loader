@@ -110,7 +110,7 @@ local function loadScript(scriptName)
     end
 
     if scriptEnv and type(scriptEnv.tick) == "function" then
-        loadedScripts[scriptName] = menu.add_feature(scriptName, "toggle", scriptFeats.id, function(f)
+        loadedScripts[scriptName] = menu.add_feature(scriptName, "toggle", scriptParentId, function(f)
             while f.on do
                 scriptEnv.tick()
                 coroutine.yield(0)
