@@ -14,7 +14,7 @@ end
 
 local function create_texture_wrapper(filePath)
     local id = scriptdraw.register_sprite(filePath)
-    originalMenu.notify("create_texture id: "..tostring(id))
+    --originalMenu.notify("create_texture id: "..tostring(id))
     return id 
 end
 
@@ -31,11 +31,11 @@ local function store_dir()
 end
 
 function my_root(scriptName)
-    originalMenu.notify(tostring("Standcompat my_root 1: "..scriptName))
+    --originalMenu.notify(tostring("Standcompat my_root 1: "..scriptName))
     
     local scriptParent = scriptParents[scriptName]
     if scriptParent then
-        originalMenu.notify(tostring("Standcompat my_root 1 name: "..scriptParent.name))
+        --originalMenu.notify(tostring("Standcompat my_root 1 name: "..scriptParent.name))
         return scriptParent.id
     else
         return scriptFeats.id
@@ -104,13 +104,7 @@ end
 
 local function menuGlobals()
     _G["menu"] = {}
-    _G["menu"].is_trusted_mode_enabled = function(flag)
-        if not flag then
-            return trusted_mode & 31 == 31
-        else
-            return trusted_mode & flag == flag
-        end
-    end
+
 
     --todo: add description as a hint
     _G["menu"].toggle = function(root, name, command, description, callback)        
@@ -259,12 +253,15 @@ local function playersGlobals()
        --    id = e
        --end)
     end
+
     _G["players"].user = function()
         return originalPlayer.player_id()
     end
+
     _G["players"].dispatch_on_join = function()
         --related to on_join, seems to be a event listener calling on_join
     end
+
     _G["players"].get_rockstar_id = function(id)
         return originalPlayer.get_player_scid(id)
     end
@@ -275,26 +272,23 @@ local function directxGlobals()
     _G["directx"] = _G["directx"] or {}
     _G["directx"].create_texture = create_texture_wrapper
     
-    --todo: fix rotation and scaling issues
     _G["directx"].draw_texture = function(texture_id, sizeX, sizeY, centerX, centerY, posX, posY, rotation, color)
-        --local colorInt = (color["r"] * 255) << 24 | (color["g"] * 255) << 16 | (color["b"] * 255) << 8 | (color["a"] * 255)
-        local colorInt = RGBAToInt(color["r"]*255, color["g"]*255, color["b"]*255)
+        local colorInt = RGBAToInt(color["r"] * 255, color["g"] * 255, color["b"] * 255)
     
         local position = v2(posX * 2 - 1, posY * -2 + 1)
     
         local scale = sizeX
-        --local scale = 1 --test
-        --print("scale: "..sizeX)
-        
+    
+        local radians = rotation * 2 * math.pi
+    
         if texture_id == nil then
             return 
         end
-
-        --void draw_sprite(int id, v2 pos, float scale, float rot, uint32_t color, float|nil phase)⚓︎
-        scriptdraw.draw_sprite(texture_id, position, scale, rotation, colorInt)
-    end
-
-    _G["directx"].draw_text = function(x, y, text, allign, scale, colour, unk) --void draw_text(string text, v2 pos, v2 size, float scale, uint32_t color, uint32_t flags, int|nil font)⚓︎   
+    
+        scriptdraw.draw_sprite(texture_id, position, scale, radians, colorInt)
+    end   
+    
+    _G["directx"].draw_text = function(x, y, text, allign, scale, colour, unk)
         scriptdraw.draw_text(text, v2(x, y), v2(scale, scale), scale, RGBAToInt(colour["r"]*255, colour["g"]*255, colour["b"]*255), eDrawTextFlags.TEXTFLAG_VCENTER)
     end
 end
@@ -329,4 +323,5 @@ function standRestoreOriginalMenu()
     _G["menu"] = originalMenu
     _G["player"] = originalPlayer
     _G["require"] = originalRequire
+    _G["event"] = originalEvent
 end

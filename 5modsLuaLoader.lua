@@ -57,12 +57,10 @@ local function loadScript(scriptName)
     end
     
     if not scriptParents[scriptName] then
-        print("Loading script "..scriptName)
         scriptParents[scriptName] = originalMenu.add_feature(scriptName, "parent", scriptFeats.id)
     end
 
     if not scriptPlayerParents[scriptName] then
-        print("Loading script "..scriptName)
         scriptPlayerParents[scriptName] = originalMenu.add_player_feature(scriptName, "parent", scriptPlayerFeats.id)
     end
 
@@ -120,6 +118,8 @@ local function loadScript(scriptName)
 
     menu.notify("Loaded "..scriptName, "Lua Loader")
 end
+
+print(tostring(originalPlayer))
 
 -- Loading scripts
 do
