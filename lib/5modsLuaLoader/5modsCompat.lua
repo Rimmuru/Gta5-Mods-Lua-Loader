@@ -1,3 +1,6 @@
+local getAppdataPath <const> = utils.get_appdata_path("PopstarDevs", "").."\\2Take1Menu"
+local scriptsPath <const> = getAppdataPath.."\\scripts\\lib\\5modsLua\\"
+
 local function get_key_pressed(keyID)
     if type(keyID) == "number" then
         --menu.notify(tostring(keyID))

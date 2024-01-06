@@ -84,18 +84,18 @@ end
 local function utilsGlobals()
     _G["util"] = {}
     _G["util"].yield = function(...)
-        coroutine.yield()
+        return coroutine.yield()
     end
     _G["util"].keep_running = function(...)
     end
     _G["util"].require_natives = function(...)
-        originalRequire("lib\\standScriptLoader\\natives2845")
+        return originalRequire("lib\\standScriptLoader\\natives2845")
     end
     _G["util"].toast = function(str, bitflags)
-        originalMenu.notify(tostring(str), "Stand Loader")
+        return originalMenu.notify(tostring(str), "Stand Loader")
     end
     _G["util"].log = function(str)
-       print(tostring(str), "Stand Loader")
+       return print(tostring(str), "Stand Loader")
     end
     _G["util"].create_tick_handler = function(func)
        --do nothing for now, will 100% forget
@@ -108,18 +108,11 @@ local function menuGlobals()
 
     --todo: add description as a hint
     _G["menu"].toggle = function(root, name, command, description, callback)        
-        local feature
-        if type(root) == "userdata" then
-            feature = originalMenu.add_feature(name, "autoaction_value_i", root.id, function(feat)
-                local toggle = feat.on
-                callback(toggle)
-            end)
-        else
-            feature = originalMenu.add_feature(name, "autoaction_value_i", root, function(feat)
-                local toggle = feat.on
-                callback(toggle)
-            end)        
-        end
+        local id = type(root) == "userdata" and root.id or root
+
+        local feature = originalMenu.add_feature(name, "autoaction_value_i", id, function(feat)
+            callback(feat.on)
+        end)
     
         if feature and description and type(description) == "string" then
             feature.hint = description
@@ -134,16 +127,11 @@ local function menuGlobals()
       
     --value isnt passed back to stand :(
     _G["menu"].slider = function(root, name, command, description, min, max, defaultValue, step, callback)   
-        local feature
-        if type(root) == "userdata" then
-            feature = originalMenu.add_feature(name, "autoaction_value_i", root.id, function()
-                callback(f.value)
-            end)
-        else
-            feature = originalMenu.add_feature(name, "autoaction_value_i", root, function()
-                callback(f.value)
-            end)        
-        end
+        local id = type(root) == "userdata" and root.id or root
+
+        local feature = originalMenu.add_feature(name, "autoaction_value_i", id, function(f)
+            callback(f.value)
+        end)
     
         if feature and description and type(description) == "string" then
             feature.hint = description
@@ -160,13 +148,10 @@ local function menuGlobals()
     end
 
     _G["menu"].action = function(root, name, command, description, callback)
-        local feature
-        if type(root) == "userdata" then
-            feature = originalMenu.add_feature(name, "action", root.id, callback)
-        else
-            feature = originalMenu.add_feature(name, "action", root, callback)
-        end
-    
+        local id = type(root) == "userdata" and root.id or root
+
+        local feature = originalMenu.add_feature(name, "action", id, callback)
+
         if feature and description and type(description) == "string" then
             feature.hint = description
         end
@@ -183,27 +168,19 @@ local function menuGlobals()
         local nameLength = #name
         local spaces = math.max(0, (totalLength - nameLength) // 2) 
         local dividerName = string.rep(" ", spaces) .. name .. string.rep(" ", spaces) 
-        if type(root) == "userdata" then
-            return originalMenu.add_feature(dividerName, "action", root.id) 
-        else
-            return originalMenu.add_feature(dividerName, "action", root)
-        end
+        local id = type(root) == "userdata" and root.id or root
+
+        return originalMenu.add_feature(dividerName, "action", id) 
     end    
    
     _G["menu"].toggle_loop = function(root, name, command, description, ontick, callback)
-        if type(root) == "userdata" then
-            return originalMenu.add_feature(name, "toggle", root.id, callback)
-        else
-            return originalMenu.add_feature(name, "toggle", root, callback)
-        end
+        local id = type(root) == "userdata" and root.id or root
+        return originalMenu.add_feature(name, "toggle", id, callback)
     end
 
     _G["menu"].list = function(root, name, command, description, callback)
-        if type(root) == "userdata" then
-            return originalMenu.add_feature(name, "parent", root.id, callback)
-        else
-            return originalMenu.add_feature(name, "parent", root, callback)
-        end    
+        local id = type(root) == "userdata" and root.id or root
+        return originalMenu.add_feature(name, "parent", id, callback) 
     end
 
     _G["menu"].my_root = function() 
