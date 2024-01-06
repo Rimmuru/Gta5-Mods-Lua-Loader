@@ -159,9 +159,7 @@ local function menuGlobals()
         return feature
     end
     
-    _G["menu"].readonly = function(root, name, value)  
-        return {} --todo make work 
-    end   
+ 
 
     _G["menu"].divider = function(root, name)
         local totalLength = 100  
@@ -191,7 +189,8 @@ local function menuGlobals()
         return player_root(scriptName) 
     end
 
-    _G["menu"].ref_by_path = function(path, version) 
+    _G["menu"].ref_by_path = function(path) 
+        return ""
     end
 
     _G["menu"].trigger_commands = function(str)
@@ -200,7 +199,7 @@ local function menuGlobals()
     end
 
     _G["menu"].hyperlink = function(id, name, link, help)
-        return 0
+
     end
 end
 
