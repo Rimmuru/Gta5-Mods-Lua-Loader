@@ -42,15 +42,16 @@ function JM36Compat()
     _G["JM36"].yield = function(time)
         return coroutine.yield(time)
     end
+   
     _G["JM36"].Wait = function(time)
         return coroutine.yield(time)
     end
     
     _G["JM36"].CreateThread = function(callback)
-        return menu.create_thread(callback)
+        return originalMenu.create_thread(callback)
     end
 
     _G["JM36"].CreateThread_HighPriority = function(callback)
-        return menu.create_thread(callback)
+        return originalMenu.create_thread(callback)
     end
 end

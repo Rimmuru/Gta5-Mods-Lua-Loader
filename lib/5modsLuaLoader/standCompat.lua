@@ -1,13 +1,6 @@
 local getAppdataPath <const> = utils.get_appdata_path("PopstarDevs", "").."\\2Take1Menu"
 local scriptsPath <const> = getAppdataPath.."\\scripts\\lib\\5modsLua\\"
 
-local originalRequire <const> = require
-originalMenu = menu --needs to be global because kill me
-originalPlayer = player
-originalEvent = event
-scriptParents = {}
-scriptPlayerParents = {}
-
 function trim(s)
     return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
@@ -159,8 +152,14 @@ local function menuGlobals()
         return feature
     end
     
+    _G["menu"].readonly = function(root, name, value)  
+        return {
+            parent = parent,
+            name = menu_name,
+            value = value or "",
+        }
+    end  
  
-
     _G["menu"].divider = function(root, name)
         local totalLength = 100  
         local nameLength = #name

@@ -8,6 +8,35 @@ local function get_key_pressed(keyID)
     end
 end
 
+local allowedExtensions <const> = {
+    [".txt"] = true,
+    [".log"] = true,
+    [".xml"] = true,
+    [".ini"] = true,
+    [".cfg"] = true,
+    [".csv"] = true,
+    [".json"] = true,
+    [".lua"] = true,
+    [".luac"] = true,
+    [".2t1"] = true,
+    [".jpg"] = true,
+    [".jpeg"] = true,
+    [".png"] = true,
+    [".gif"] = true,
+    [".bmp"] = true,
+    [".dds"] = true,
+    [".spritefont"] = true,
+    [".index"] = true
+}
+
+local function isExtensionAllowed(extension)
+    return allowedExtensions[extension] == true
+end
+
+local function getFileExtension(path)
+    return path:match("^.+(%..+)$")
+end
+
 function modsCompat()
     _G.get_key_pressed = get_key_pressed
 
@@ -19,9 +48,14 @@ function modsCompat()
         return coroutine.yield(time)
     end
     
-    _G["io"].open = function(path, mode) 
+    local originalOpen <const> = io.open  
+    _G["io"].open = function(path, mode)
+        local extension = getFileExtension(path)
+        if not extension or not allowedExtensions[extension] then
+            path = path .. ".2t1"
+        end
         local newPath = scriptsPath .. path
-        return io.open(newPath, mode)
+        return originalOpen(newPath, mode)
     end
     
     _G["Libs"] = setmetatable({}, {
