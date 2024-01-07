@@ -6,6 +6,14 @@ if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
     return menu.exit()
 end
 
+--set them before we override them
+originalMenu = menu 
+originalPlayer = player
+originalEvent = event
+originalRequire = require
+scriptParents = {}
+scriptPlayerParents = {}
+
 do -- dependencies check
     local includes <const> = {
         "natives2845",
@@ -118,8 +126,6 @@ local function loadScript(scriptName)
 
     menu.notify("Loaded "..scriptName, "Lua Loader")
 end
-
-print(tostring(originalPlayer))
 
 -- Loading scripts
 do

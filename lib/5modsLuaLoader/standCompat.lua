@@ -49,31 +49,6 @@ local function RGBAToInt(Red, Green, Blue, Alpha)
     return ((Red & 0x0ff) << 0x00) | ((Green & 0x0ff) << 0x08) | ((Blue & 0x0ff) << 0x10) | ((Alpha & 0x0ff) << 0x18)
 end
 
-local function createColorPickerFeature(name, command, description, defaultColor, root)
-    local rgba = {}
-    originalMenu.add_feature(name, "action", root, function()
-        local status, ABGR, r, g, b, a
-        repeat
-            status, ABGR, r, g, b, a = cheeseUtils.pick_color(red, green, blue, 255)
-   
-           if status == 2 then
-               return
-           end
-   
-           coroutine.yield(0)
-       until status == 0
-
-        r = r / 255.0
-        g = g / 255.0
-        b = b / 255.0
-        a = a / 255.0
-        
-        rgba = {r, g, b, a}
-    end)  
-
-    return rgba
-end
-
 local function utilsGlobals()
     _G["util"] = {}
     _G["util"].yield = function(...)
@@ -103,7 +78,7 @@ local function menuGlobals()
     _G["menu"].toggle = function(root, name, command, description, callback)        
         local id = type(root) == "userdata" and root.id or root
 
-        local feature = originalMenu.add_feature(name, "autoaction_value_i", id, function(feat)
+        local feature = originalMenu.add_feature(name, "toggle", id, function(feat)
             callback(feat.on)
         end)
     
@@ -115,7 +90,6 @@ local function menuGlobals()
     end    
  
     _G["menu"].colour = function(name, command, description, defaultColor, root) --doesnt pass the colour back -.-
-        return createColorPickerFeature(command, command, name, defaultColor, name)
     end 
       
     --value isnt passed back to stand :(
@@ -170,10 +144,20 @@ local function menuGlobals()
         return originalMenu.add_feature(dividerName, "action", id) 
     end    
    
-    _G["menu"].toggle_loop = function(root, name, command, description, ontick, callback)
-        local id = type(root) == "userdata" and root.id or root
-        return originalMenu.add_feature(name, "toggle", id, callback)
-    end
+    _G["menu"].toggle_loop = function(parent, menu_name, command_names, help_text, on_tick, on_stop)
+        local id = type(parent) == "userdata" and parent.id or parent
+        return originalMenu.add_feature(menu_name.."", "toggle", id, function(f)
+            while f.on do
+                if on_tick and type(on_tick) == "function" then
+                    on_tick()
+                end
+                coroutine.yield()
+            end
+            if on_stop and type(on_stop) == "function" then
+                on_stop()
+            end
+        end)
+    end   
 
     _G["menu"].list = function(root, name, command, description, callback)
         local id = type(root) == "userdata" and root.id or root
@@ -188,13 +172,18 @@ local function menuGlobals()
         return player_root(scriptName) 
     end
 
-    _G["menu"].ref_by_path = function(path) 
-        return ""
+    _G["menu"].ref_by_path = function(path, version)
+        print("ref_by_path called with path: " .. tostring(path) .. ", version: " .. tostring(version))
+        -- Rest of the implementation
     end
+    
 
     _G["menu"].trigger_commands = function(str)
     end
     _G["menu"].trigger_command = function(str)
+    end
+    _G["menu"].show_command_box_click_based = function(var, str)
+        --input box of sorts i think, pass value back as param1
     end
 
     _G["menu"].hyperlink = function(id, name, link, help)
