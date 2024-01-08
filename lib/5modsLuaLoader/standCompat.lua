@@ -73,7 +73,6 @@ end
 local function menuGlobals()
     _G["menu"] = {}
 
-
     --todo: add description as a hint
     _G["menu"].toggle = function(root, name, command, description, callback)        
         local id = type(root) == "userdata" and root.id or root
@@ -173,8 +172,8 @@ local function menuGlobals()
     end
 
     _G["menu"].ref_by_path = function(path, version)
+        version = version or nil
         print("ref_by_path called with path: " .. tostring(path) .. ", version: " .. tostring(version))
-        -- Rest of the implementation
     end
     
 
@@ -230,6 +229,9 @@ local function playersGlobals()
         return originalPlayer.get_player_scid(id)
     end
 
+    _G["players"].user_ped = function()
+        return PLAYER.PLAYER_PED_ID()
+    end
 end
     
 local function directxGlobals()
