@@ -98,6 +98,7 @@ local function loadScript(scriptName)
         return my_root(scriptName) 
     end
     _G["menu"].player_root = function() 
+        originalMenu.notify(tostring("Standcompat player_root: "..scriptName))
         return player_root(scriptName) 
     end
 
@@ -150,8 +151,9 @@ do
                 loadScript(scriptName)
             else
                 if loadedScripts[scriptName] then
-                    --unload logic. package.loaded might be blacklisted though
+                    --unload logic. original package.loaded is unused as 2t1 replaces require
                     menu.delete_feature(loadedScripts[scriptName].id, true)
+                    package.unload(scriptName)
                 end
             end
         end)

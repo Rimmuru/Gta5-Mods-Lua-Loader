@@ -271,11 +271,18 @@ end
 
 function standCompat()
     _G.require = function(moduleName)
-        if string.find(moduleName, "natives") then
-            return originalRequire("lib\\5modsLuaLoader\\natives2845")
-        else
-            return originalRequire(moduleName)
+        if not package.loaded[moduleName] then
+            if string.find(moduleName, "natives") then
+                package.loaded[moduleName] = originalRequire("lib\\5modsLuaLoader\\natives2845")
+            else
+                package.loaded[moduleName] = originalRequire(moduleName)
+            end
         end
+        return package.loaded[moduleName]
+    end
+
+    _G["package"].unload = function(moduleName) --custom unload for cosistency with custom require 
+        package.loaded[moduleName] = nil
     end
 
     utilsGlobals()
