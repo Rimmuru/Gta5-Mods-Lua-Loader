@@ -28,7 +28,7 @@
 - If you encounter any issues or have questions, please create a GitHub issue [here](https://github.com/Rimmuru/Gta5-Mods-Lua-Loader/issues) for assistance.
 
 #### Version Information
-- 5modsLua version: 1.0.3
+- 5modsLua version: 1.4.0
 
 #### License
 - This script is released under the [MIT license](https://github.com/Rimmuru/Gta5-Mods-Lua-Loader/tree/main?tab=MIT-1-ov-file) specified in the repository.
