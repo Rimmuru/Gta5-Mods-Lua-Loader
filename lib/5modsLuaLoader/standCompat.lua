@@ -44,36 +44,61 @@ function player_root(scriptName)
     end
 end
 
+function ref_by_path(var, var2)
+   
+end
+
 local function RGBAToInt(Red, Green, Blue, Alpha)
     Alpha = Alpha or 255
     return ((Red & 0x0ff) << 0x00) | ((Green & 0x0ff) << 0x08) | ((Blue & 0x0ff) << 0x10) | ((Alpha & 0x0ff) << 0x18)
 end
 
+local threads = {}
 local function utilsGlobals()
     _G["util"] = {}
+
     _G["util"].yield = function(...)
         return coroutine.yield()
     end
+
     _G["util"].keep_running = function(...)
     end
+
     _G["util"].require_natives = function(...)
         return originalRequire("lib\\standScriptLoader\\natives2845")
     end
+
     _G["util"].toast = function(str, bitflags)
-        return originalMenu.notify(tostring(str), "Stand Loader")
+        return originalMenu.notify(tostring(str), "5Mods Stand Loader")
     end
+
+    _G["util"].create_thread = function(func, ...)
+        local thread = originalMenu.create_thread(func, ...)
+        threads[#threads+1] = thread
+        return thread
+    end
+
     _G["util"].log = function(str)
-       return print(tostring(str), "Stand Loader")
+       return print(tostring(str), "5Mods Stand Loader")
     end
+
+    --Registers the parameter-function to be called every tick until it returns false.
     _G["util"].create_tick_handler = function(func)
-       --do nothing for now, will 100% forget
+        threads[#threads+1] = originalMenu.create_thread(function()
+            while true do
+                local status, continue = pcall(func)
+                if not status or not continue then
+                    break
+                end
+                coroutine.yield()
+            end
+        end)
     end
 end
 
 local function menuGlobals()
     _G["menu"] = {}
 
-    --todo: add description as a hint
     _G["menu"].toggle = function(root, name, command, description, callback)        
         local id = type(root) == "userdata" and root.id or root
 
@@ -170,23 +195,16 @@ local function menuGlobals()
     _G["menu"].player_root = function()
         return player_root(scriptName) 
     end
-
-    _G["menu"].ref_by_path = function(path, version)
-        version = version or nil
-        print("ref_by_path called with path: " .. tostring(path) .. ", version: " .. tostring(version))
-    end
-    
-
+   
     _G["menu"].trigger_commands = function(str)
     end
-    _G["menu"].trigger_command = function(str)
+    _G["menu"].trigger_command = function(cmd, str)
     end
     _G["menu"].show_command_box_click_based = function(var, str)
         --input box of sorts i think, pass value back as param1
     end
 
     _G["menu"].hyperlink = function(id, name, link, help)
-
     end
 end
 
@@ -212,9 +230,9 @@ local function playersGlobals()
     end
 
     _G["players"].on_join = function(callback)
-       --originalEvent.add_event_listener("player_join", function(e) --this is wrong
-       --    id = e
-       --end)
+       originalEvent.add_event_listener("player_join", function(e)
+           callback()
+       end)
     end
 
     _G["players"].user = function()
@@ -275,6 +293,11 @@ function standCompat()
             if string.find(moduleName, "natives") then
                 package.loaded[moduleName] = originalRequire("lib\\5modsLuaLoader\\natives2845")
             else
+                local status, scriptEnv = pcall(originalRequire, "lib\\5modsLua\\"..moduleName)
+                if not status then
+                    originalMenu.notify("Error loading module for script: " .. tostring(scriptEnv), "Error", 7)
+                    return
+                end
                 package.loaded[moduleName] = originalRequire(moduleName)
             end
         end
@@ -283,6 +306,9 @@ function standCompat()
 
     _G["package"].unload = function(moduleName) --custom unload for cosistency with custom require 
         package.loaded[moduleName] = nil
+        for i, v in ipairs(threads) do
+            originalMenu.delete_thread(v)
+        end
     end
 
     utilsGlobals()

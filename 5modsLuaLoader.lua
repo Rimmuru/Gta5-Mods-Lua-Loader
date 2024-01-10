@@ -79,21 +79,15 @@ local function loadScript(scriptName)
 
     -- support for https://www.gta5-mods.com/tools/jm36-lua-plugin-for-script-hook-v-reloaded
     JM36Compat()
-
+      
     -- support for https://www.gta5-mods.com/scripts/tags/lua
     modsCompat()
     
-    -- attempt to support fivem - complicated cunt
+    -- attempt to support fivem --impliment when stand is stable
     fivemCompat()
 
-    --stand - kill me now erroring cunt
+    --stand - kill me now
     standCompat()
-
-    local chunk, errorMessage = _loadfile(scriptPath)
-    if not chunk then
-        originalMenu.notify("Error loading script: " .. tostring(errorMessage), "Error", 7)
-        return
-    end
 
     _G["menu"].my_root = function() 
         originalMenu.notify(tostring("Standcompat my_root: "..scriptName))
@@ -103,10 +97,20 @@ local function loadScript(scriptName)
         originalMenu.notify(tostring("Standcompat player_root: "..scriptName))
         return player_root(scriptName) 
     end
+   
+    _G["menu"].ref_by_path = function(path, version)
+        version = version or nil
+        originalMenu.notify("ref_by_path called with path: " .. tostring(path) .. ", version: " .. tostring(version))
+        return ref_by_path(path, version)
+    end
+
+    local chunk, errorMessage = _loadfile(scriptPath)
+    if not chunk then
+        originalMenu.notify("Error loading script: " .. tostring(errorMessage), "Error", 7)
+        return
+    end
 
     chunk()
-
-    standRestoreOriginalMenu()
 
     local status, scriptEnv = pcall(require, "lib\\5modsLua\\"..scriptName)
     if not status then
@@ -126,7 +130,8 @@ local function loadScript(scriptName)
             end
         end)
     end
-
+    
+    standRestoreOriginalMenu()
     menu.notify("Loaded "..scriptName, "Lua Loader")
 end
 
@@ -155,18 +160,9 @@ do
 
         add_feature("Unload", "action", scriptParent.id, function(f)
             if scriptParents[scriptName] then
-                originalMenu.notify("test unload")
-                originalMenu.notify(tostring(scriptParents[scriptName]))
-                originalMenu.notify("test unload "..scriptName)
-                originalMenu.notify("test unload table "..tostring(scriptParents))
                 --unload logic. original package.loaded is unused as 2t1 replaces require
                 originalMenu.delete_feature(scriptParents[scriptName].id, true)
                 package.unload(scriptName)
-            else
-                originalMenu.notify(tostring(scriptParents[scriptName]))
-                originalMenu.notify("test unload fail "..scriptName)
-                originalMenu.notify("test unload fail table "..tostring(scriptParents))
-
             end
         end)
     end
