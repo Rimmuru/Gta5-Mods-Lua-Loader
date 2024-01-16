@@ -16,7 +16,6 @@
 - [x] LUA Plugin for Script Hook V 10.1
 - [x] LUA Plugin for Script Hook V (Reloaded)
 - [x] Stand
-- [ ] FiveM
 
 #### Known Issues
 - [ ] Pointers in params unsupported: Some specific usage of pointers in function parameters may not be supported.
