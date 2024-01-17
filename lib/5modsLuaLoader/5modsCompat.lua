@@ -39,11 +39,11 @@ end
 
 function modsCompat()
     _G.get_key_pressed = get_key_pressed
-    
+
     _G.IsControlJustPressed = function(id, idx)
         return get_key_pressed(idx)
     end
-        
+    
     _G.wait = function(time)
         return coroutine.yield(time)
     end
@@ -60,7 +60,7 @@ function modsCompat()
     
     _G["Libs"] = setmetatable({}, {
         __index = function(t, key)
-            return require("lib.5ModsLua.libs." .. key)
+            return require(key)
         end
     })
     

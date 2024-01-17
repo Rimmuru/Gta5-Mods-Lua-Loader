@@ -65,7 +65,7 @@ local function utilsGlobals()
     end
 
     _G["util"].require_natives = function(...)
-        return originalRequire("lib\\standScriptLoader\\natives2845")
+        return originalRequire("lib\\5modsLuaLoader\\natives2845")
     end
 
     _G["util"].toast = function(str, bitflags)
@@ -296,14 +296,15 @@ function standCompat()
                 local status, scriptEnv = pcall(originalRequire, "lib\\5modsLua\\"..moduleName)
                 if not status then
                     originalMenu.notify("Error loading module for script: " .. tostring(scriptEnv), "Error", 7)
-                    return
+                    return nil -- or handle the error appropriately
                 end
-                package.loaded[moduleName] = originalRequire(moduleName)
+                package.loaded[moduleName] = scriptEnv
             end
         end
         return package.loaded[moduleName]
     end
-
+    
+    
     _G["package"].unload = function(moduleName) --custom unload for cosistency with custom require 
         package.loaded[moduleName] = nil
         for i, v in ipairs(threads) do

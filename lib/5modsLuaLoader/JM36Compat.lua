@@ -27,6 +27,7 @@ do
     convertNamespace(VEHICLE)
     convertNamespace(PLAYER)
     convertNamespace(PED)
+    convertNamespace(CONTROLS)
     convertNamespace(WEAPON)
     convertNamespace(UI)
     convertNamespace(GRAPHICS)

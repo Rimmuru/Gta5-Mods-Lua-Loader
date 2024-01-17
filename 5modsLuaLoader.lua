@@ -30,7 +30,7 @@ do -- dependencies check
            menu.notify("Dependency "..v.." is missing. Please reinstall the script.")
            return menu.exit()
        else
-           require("lib\\5modsLuaLoader\\"..v)
+            require("lib\\5modsLuaLoader\\"..v)
        end
    end
 
@@ -59,7 +59,7 @@ local scriptPlayerFeats <const> = menu.add_player_feature("5Mods Lua Script Feat
 local loadedScripts = {}
 
 local function loadScript(scriptName)
-    scriptName = trim(scriptName):lower()
+    scriptName = trim(scriptName)
     local scriptPath = scriptsPath .. scriptName 
    
     if not string.find(scriptName, "pluto") then
@@ -112,11 +112,11 @@ local function loadScript(scriptName)
 
     chunk()
 
-    local status, scriptEnv = pcall(require, "lib\\5modsLua\\"..scriptName)
-    if not status then
-        originalMenu.notify("Error loading module for script: " .. tostring(scriptEnv), "Error", 7)
-        return
-    end
+   local status, scriptEnv = pcall(require, scriptName)
+   if not status then
+       originalMenu.notify("Error loading module for script: " .. tostring(scriptEnv), "Error", 7)
+       return
+   end
     
     if scriptEnv and type(scriptEnv.init) == "function" then
         scriptEnv.init()
@@ -132,7 +132,9 @@ local function loadScript(scriptName)
     end
     
     standRestoreOriginalMenu()
-    menu.notify("Loaded "..scriptName, "Lua Loader")
+    if scriptEnv then
+        menu.notify("Loaded "..scriptName, "Lua Loader")
+    end
 end
 
 -- Loading scripts
